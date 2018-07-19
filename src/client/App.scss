@@ -1,3 +1,35 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 // ** do not touch ^ **
+
+.content-section {
+  max-width: 960px;
+  margin:  2rem auto;
+  padding: 1rem initial;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.article {
+  padding: 0 1rem 0 0;
+}
+
+.article > div {
+  padding: .5rem;
+  width: inherit;
+}
+
+.save {
+  width: fit-content !important;
+  padding: 10px;
+}
+
+#search-form {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: auto;
+  padding: 20px;
+  justify-content: space-around !important;
+  width: 90%;
+}

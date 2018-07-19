@@ -11,7 +11,7 @@ app.use(morgan('combined'));
 app.use(parser.urlencoded({ extended: true, }));
 app.use(parser.json());
 app.use(parser.text());
-app.use('/*', express.static('../../build'));
+app.use('*', express.static('../../build'));
 
 const io = socketIo.listen(app.listen(PORT));
 connect(io);

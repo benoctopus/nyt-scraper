@@ -12,6 +12,8 @@
     "react/prop-types": 0,
     "class-methods-use-this": 0,
     "no-plusplus": 2,
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-nested-ternary":"off",
+    "camelcase": "warn"
   }
 }

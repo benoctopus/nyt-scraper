@@ -83,5 +83,26 @@ module.exports = class Odm {
       }
       return { loggedIn: false };
     };
+
+    this.saveArticle = async ({ token, article }) => {
+      try {
+        await db.User.update(
+          { token },
+          { $push: { saved_articles: article } },
+        );
+      } catch (err) {
+        console.log(err);
+        throw new Error(err);
+      }
+      return true;
+    };
+
+    this.getSavedArticles = async ({ token }) => {
+      const articles = await db.User.findOne(
+        { token },
+        ['saved_articles']
+      );
+      return [...articles.saved_articles];
+    };
   }
 };

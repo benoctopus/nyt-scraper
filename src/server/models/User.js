@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  saved_articles: Array,
   tokenExpr: {
     type: Number,
     required: true,
