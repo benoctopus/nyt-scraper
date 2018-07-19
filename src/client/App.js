@@ -1,13 +1,15 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+// import { Button } from '@material-ui/core';
 import store from './store';
+import Socket from './scripts/Socket';
 import Login from './containers/Login';
-import './App.scss';
+import Home from './containers/Home';
 
 class App extends React.Component {
-  componentDidMount() {
-    return null;
+  componentWillMount() {
+    this.socket = new Socket();
   }
 
   render() {
@@ -15,11 +17,31 @@ class App extends React.Component {
       <Router>
         <Provider store={store}>
           <Switch>
-            <Route path="/" component={Login} />
+            <Route
+              path="/home"
+              render={
+                ({ history }) => <Home history={history} socket={this.socket} />
+                }
+            />
+            <Route
+              path="/"
+              render={
+                ({ history }) => <Login history={history} socket={this.socket} />
+                }
+            />
           </Switch>
         </Provider>
       </Router>
     );
+    // return (
+    //   <Button onClick={() => {
+    //     this.socket.emit('message', 'test');
+    //     console.log('clicked');
+    //   }}
+    //   >
+    //     Click Me
+    //   </Button>
+    // );
   }
 }
 

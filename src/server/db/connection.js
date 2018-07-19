@@ -2,7 +2,7 @@
 // create schema
 const mongoose = require('mongoose');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/nyt';
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);

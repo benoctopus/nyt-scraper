@@ -33,7 +33,10 @@
     "body-parser": "^1.18.3",
     "es6-promise": "^4.2.4",
     "express": "^4.16.3",
+    "mongoose": "^5.2.4",
     "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "postcss-loader": "^2.1.5",
     "prop-types": "^15.6.1",
     "react": "^16.3.1",
@@ -46,7 +49,10 @@
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "sequelize": "^4.38.0"
+    "sequelize": "^4.38.0",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^8.5.0",

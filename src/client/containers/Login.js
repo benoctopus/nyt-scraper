@@ -2,8 +2,6 @@ import React from 'react';
 import { Button, TextField, Typography } from '@material-ui/core';
 import LoginValidator from '../validators/LoginValidator';
 
-const loginValidator = LoginValidator();
-
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -13,9 +11,59 @@ class Login extends React.Component {
       validationError: null,
       loginSuccess: false,
     };
+    console.log(this.props.history);
+    this.loginCall = this.props.socket.login(this.loginHandler);
+    this.login = signUp => this.loginCall(this.state, signUp);
   }
 
-  validate = () => loginValidator.call(this, this.state);
+  componentWillMount() {
+    this.loginValidator = LoginValidator();
+  }
+
+  componentDidMount() {
+    // check token login status
+    this.props.socket.extendedLogin()
+      .then((status) => {
+        if (status) {
+          this.props.history.push('/home');
+        }
+      });
+  }
+
+  shouldComponentUpdate() {
+    return !this.state.loginSuccess;
+  }
+
+  componentDidUpdate() {
+    if (this.state.loginSuccess && localStorage.token) {
+      this.props.history.push('/home');
+    }
+  }
+
+  componentWillUnmount() {
+    this.login();
+  }
+
+  _validate = () => this.loginValidator.call(this, this.state);
+
+  loginHandler = ({ token, err }) => {
+    if (err) {
+      console.log('authentication failed');
+      this.setState({
+        loginSuccess: false,
+        validationError: err,
+      });
+    } else if (token) {
+      console.log('authentication succeeded');
+      localStorage.token = token;
+      this.setState({
+        loginSuccess: true,
+        validationError: false,
+      });
+    } else {
+      throw new Error('websocket response is missing');
+    }
+  }
 
   handleInputs = (event, field) => {
     event.preventDefault();
@@ -23,27 +71,27 @@ class Login extends React.Component {
     this.setState({ [field]: event.target.value });
   }
 
-  handleSubmit = (signUp = false) => {
-    console.log(signUp);
-    const err = this.validate();
+  handleSubmit = (signUp) => {
+    const err = this._validate();
     if (err) {
-      this.setState({ validationError: err });
-    } else {
       this.setState({
-        loginSuccess: true,
-        validationError: null,
+        validationError: err,
+        loginSuccess: false,
       });
+    } else {
+      this.login(signUp);
     }
   }
 
   render() {
-    console.log(this.state.user, this.state.pass);
     return (
       <div
         style={{
+          margin: 'auto',
           display: 'flex',
           flexFlow: 'column nowrap',
           alignItems: 'center',
+          width: '20rem',
         }}
       >
         <Typography
@@ -51,6 +99,7 @@ class Login extends React.Component {
           className="title"
           variant="headline"
           style={{ paddingTop: '10rem' }}
+
         >
         Nyt Scrape
         </Typography>
@@ -63,6 +112,7 @@ class Login extends React.Component {
               style={{ textAlign: 'center', color: 'red' }}
             >
               {this.state.validationError}
+
             </Typography>
             : null
         }
@@ -71,7 +121,6 @@ class Login extends React.Component {
             display: 'flex',
             flexFlow: 'column nowrap',
             alignItems: 'center',
-            width: '20rem'
           }}
         >
           <TextField
@@ -81,10 +130,10 @@ class Login extends React.Component {
             type="text"
             autoFocus
             required
+            onChange={event => this.handleInputs(event, 'user')}
             onKeyPress={(event) => {
                if (event.key === 'Enter') this.handleSubmit();
-              }}
-            onChange={event => this.handleInputs(event, 'user')}
+            }}
             value={this.state.userName}
           />
           <TextField
@@ -110,7 +159,7 @@ class Login extends React.Component {
             }}
           >
             <Button
-              onClick={this.handleSubmit(false)}
+              onClick={() => this.handleSubmit(false)}
             >
               sign in
             </Button>

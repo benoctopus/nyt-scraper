@@ -1,73 +1,41 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    // Giving the User model a name of type STRING
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      default: DataTypes.UUIDV4,
-      unique: true,
-    },
-    email: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.STRING(128),
-      allowNull: false
-    },
-    age_range: {
-      types: DataTypes.BOOLEAN,
-    },
-    age_range_lower: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    age_range_higher: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    credit_rating: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    address_1: {
-      type: DataTypes.STRING(128),
-      allowNull: false
-    },
-    city: {
-      type: DataTypes.STRING(48),
-      allowNull: false
-    },
-    state: {
-      type: DataTypes.STRING(24),
-      allowNull: false
-    },
-    zip: {
-      type: DataTypes.DECIMAL(8, 0),
-      allowNull: false
-    },
-    address_2: {
-      type: DataTypes.STRING(128)
-    }
-  });
+const mongoose = require('mongoose');
+const uuidv4 = require('uuid/v4');
 
-  User.associate = (models) => {
-    // Associating User with Host
-    // When an User is deleted, also delete any associated Host
-    User.hasMany(models.Host, {
-      foreignKey: 'user_id',
-      sourceKey: 'id',
-      onDelete: 'cascade'
-    });
+const UserSchema = new mongoose.Schema({
+  uid: {
+    type: String,
+    unique: true,
+    default: () => uuidv4(),
+  },
+  user: {
+    type: String,
+    unique: true,
+    required: [true, 'usename is required,'],
+    minLength: [3, 'username must be at least 3 characters long.'],
+    maxLength: [20, 'username must be less than 20 characters.'],
+  },
+  pass: {
+    type: String,
+    required: [true, 'password is required,'],
+    minLength: [6, 'password must be at least 3 characters long'],
+    maxLength: [20, 'password must be less than 20 characters.'],
+  },
+  token: {
+    type: String,
+    required: true,
+  },
+  tokenExpr: {
+    type: Number,
+    required: true,
+    default: () => parseInt(new Date().getTime(), 10) + (96 * 40 * 60 * 1000),
+  },
+  created: {
+    type: Number,
+    required: true,
+    default: () => parseInt(new Date().getTime(), 10),
+  },
+});
 
-    User.hasMany(models.Renter, {
-      foreignKey: 'user_id',
-      sourceKey: 'id',
-      onDelete: 'cascade'
-    });
-  };
+const User = mongoose.model('User', UserSchema);
 
-  return User;
-};
-
+module.exports = User;
